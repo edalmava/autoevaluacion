@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Grados</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 20px auto; 
+            padding: 20px; 
+            background-color: #f8f9fa;
+        }
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        th, td { 
+            padding: 12px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd; 
+        }
+        th { 
+            background-color: #f5f5f5; 
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        .status-toggle { 
+            cursor: pointer; 
+            color: blue;            
+        }
+        .edit-btn { 
+            color: #3498db; 
+            cursor: pointer; 
+            margin-right: 10px;
+        }
+        .delete-btn { 
+            color: red; 
+            cursor: pointer; 
+        }
+        .add-grade-form { 
+            margin-top: 30px; 
+            padding: 20px; 
+            background: #f9f9f9; 
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input[type="text"] { 
+            padding: 8px; 
+            width: 300px; 
+            margin-right: 10px; 
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .alert {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .active-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .inactive-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .save-btn {
+            background-color: #28a745;
+            margin-right: 5px;
+        }
+        .cancel-btn {
+            background-color: #6c757d;
+        }
+        .no-grades {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Administración de Grados</h1>        
+    </div>
+
+    <div id="alertContainer" class="alert"></div>
+
+    <table id="gradesTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Datos se cargarán dinámicamente -->
+        </tbody>
+    </table>
+    <div id="noGradesMessage" class="no-grades" style="display: none;">
+        No hay grados registrados. Agregue uno nuevo.
+    </div>
+
+    <div class="add-grade-form">
+        <h3>Agregar Nuevo Grado</h3>
+        <input type="text" id="newGradeName" placeholder="Nombre del grado" maxlength="10">
+        <button onclick="addGrade()">Agregar</button>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8080/api";
+
+        // Cargar grados al iniciar
+        document.addEventListener('DOMContentLoaded', loadGrades);
+
+        // Mostrar alertas
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.textContent = message;
+            alertContainer.className = `alert alert-${type}`;
+            alertContainer.style.display = 'block';
+            
+            // Ocultar después de 3 segundos
+            setTimeout(() => {
+                alertContainer.style.display = 'none';
+            }, 3000);
+        }
+
+        async function loadGrades() {
+            try {
+                const response = await fetch(`${API_BASE}/gradesAdmin`);
+                if (!response.ok) {
+                    throw new Error('Error al cargar los grados');
+                }
+                const grades = await response.json();
+                renderGrades(grades);
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error al cargar los grados: ' + error.message, 'error');
+            }
+        }
+
+        function renderGrades(grades) {
+            const tbody = document.querySelector('#gradesTable tbody');
+            const noGradesMessage = document.getElementById('noGradesMessage');
+            
+            tbody.innerHTML = '';
+            
+            if (grades.length === 0) {
+                noGradesMessage.style.display = 'block';
+                return;
+            }
+            
+            noGradesMessage.style.display = 'none';
+
+            grades.forEach(grade => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-id', grade.id);
+                row.setAttribute('data-name', grade.name);
+                row.setAttribute('data-active', grade.active);
+                
+                row.innerHTML = `
+                    <td>${grade.id}</td>
+                    <td>${grade.name}</td>
+                    <td>
+                        <span class="status-toggle" onclick="toggleStatus(${grade.id})">
+                            ${grade.active ? 
+                                '<span class="active-badge">Activo</span>' : 
+                                '<span class="inactive-badge">Inactivo</span>'}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="edit-btn" onclick="enableEdit(this)">Editar</span>
+                        <span class="delete-btn" onclick="deleteGrade(${grade.id})">Eliminar</span>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        async function toggleStatus(gradeId) {
+            try {
+                const response = await fetch(`${API_BASE}/grades/${gradeId}/toggle`, { method: 'PUT' });
+                if (!response.ok) {
+                    throw new Error('Error al cambiar el estado');
+                }
+                
+                showAlert('Estado actualizado correctamente', 'success');
+                loadGrades(); // Recargar lista
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error al cambiar el estado: ' + error.message, 'error');
+            }
+        }
+
+        async function addGrade() {
+            const nameInput = document.getElementById('newGradeName');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                showAlert('Ingrese un nombre válido', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/grades`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: name, active: true })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al crear el grado');
+                }
+
+                nameInput.value = '';
+                showAlert('Grado agregado correctamente', 'success');
+                loadGrades(); // Recargar lista
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error al agregar grado: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteGrade(gradeId) {
+            if (!confirm('¿Está seguro de eliminar este grado? Esta acción no se puede deshacer.')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/grades/${gradeId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Error al eliminar el grado');
+                }
+                
+                showAlert('Grado eliminado correctamente', 'success');
+                loadGrades(); // Recargar lista
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error al eliminar grado: ' + error.message, 'error');
+            }
+        }
+
+        function enableEdit(element) {
+            const row = element.closest('tr');
+            const id = row.getAttribute('data-id');
+            const originalName = row.getAttribute('data-name');
+            const isActive = row.getAttribute('data-active') === 'true';
+            
+            const cells = row.querySelectorAll('td');
+            const nameCell = cells[1];
+            const statusCell = cells[2];
+            
+            // Crear input para nombre
+            nameCell.innerHTML = `<input type="text" value="${originalName}" style="width: 90%" maxlength="10">`;
+            
+            // Crear select para estado
+            statusCell.innerHTML = `
+                <select style="width: 100px; padding: 4px;">
+                    <option value="true" ${isActive ? 'selected' : ''}>Activo</option>
+                    <option value="false" ${!isActive ? 'selected' : ''}>Inactivo</option>
+                </select>
+            `;
+            
+            // Cambiar botones
+            cells[3].innerHTML = `
+                <button class="save-btn" onclick="saveChanges(${id})">Guardar</button>
+                <button class="cancel-btn" onclick="cancelEdit(${id})">Cancelar</button>
+            `;
+        }
+
+        async function saveChanges(id) {
+            const row = document.querySelector(`tr[data-id="${id}"]`);
+            const newName = row.querySelector('input').value.trim();
+            const newStatus = row.querySelector('select').value === 'true';
+
+            if (!newName) {
+                showAlert('El nombre no puede estar vacío', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/grades/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name: newName,
+                        active: newStatus 
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Error al actualizar el grado');
+                }
+                
+                showAlert('Grado actualizado correctamente', 'success');
+                loadGrades(); // Recargar la lista
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('Error al actualizar grado: ' + error.message, 'error');
+            }
+        }
+
+        function cancelEdit(id) {
+            loadGrades(); // Simplemente recargamos la lista para cancelar la edición
+        }
+
+        // Permitir enviar el formulario con Enter
+        document.getElementById('newGradeName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addGrade();
+            }
+        });
+    </script>
+</body>
+</html>
