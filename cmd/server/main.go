@@ -30,13 +30,11 @@ func main() {
 	// Iniciar el gestor de WebSockets
 	go websocketapi.WsManager.Run()
 
-	// Nueva ruta para WebSocket
-	r.HandleFunc("/ws", websocketapi.WsHandler).Methods("GET")
-	r.HandleFunc("/ws/grade/{gradeId}", websocketapi.WsGradeHandler).Methods("GET")
-	r.HandleFunc("/ws/student/{studentId}", websocketapi.WsStudentHandler).Methods("GET")
-
 	// Iniciar servidor
 	port := 8080
-	fmt.Printf("Servidor iniciado en http://localhost:%d\n", port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), r))
+	serverAddress := fmt.Sprintf(":%d", port)
+	fmt.Printf("Servidor iniciado en http://localhost%s\n", serverAddress)
+	if err := http.ListenAndServe(serverAddress, r); err != nil {
+		log.Fatalf("Error al iniciar el servidor: %v", err)
+	}
 }

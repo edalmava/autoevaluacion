@@ -6,6 +6,7 @@ import (
 
 	"github.com/edalmava/student-behavior-api/internal/api/handlers"
 	"github.com/edalmava/student-behavior-api/internal/api/middleware"
+	"github.com/edalmava/student-behavior-api/internal/websocketapi"
 
 	"github.com/gorilla/mux"
 )
@@ -16,9 +17,9 @@ func SetupRoutes(r *mux.Router) {
 
 	// API routes
 	api := r.PathPrefix("/api").Subrouter()
-	api.HandleFunc("/gradesAdmin", handlers.GetGradesHandler).Methods("GET")
-	api.HandleFunc("/grades", handlers.GetGrades).Methods("GET")
-	api.HandleFunc("/grades", handlers.CreateGrade).Methods("POST")
+	api.HandleFunc("/gradesAdmin", handlers.GetGradesHandler).Methods(http.MethodGet)
+	api.HandleFunc("/grades", handlers.GetGrades).Methods(http.MethodGet)
+	api.HandleFunc("/grades", handlers.CreateGrade).Methods(http.MethodPost)
 	api.HandleFunc("/grades/{id}", handlers.UpdateGrade).Methods("PUT")
 	api.HandleFunc("/grades/{id}", handlers.DeleteGrade).Methods("DELETE")
 	api.HandleFunc("/grades/{id}/toggle", handlers.ToggleGrade).Methods("PUT")
@@ -35,4 +36,9 @@ func SetupRoutes(r *mux.Router) {
 	r.HandleFunc("/", handlers.IndexHandler)
 	r.HandleFunc("/admin", handlers.AdminHandler)
 	r.HandleFunc("/grades", handlers.GradesHandler)
+
+	// Nueva ruta para WebSocket
+	r.HandleFunc("/ws", websocketapi.WsHandler).Methods("GET")
+	r.HandleFunc("/ws/grade/{gradeId}", websocketapi.WsGradeHandler).Methods("GET")
+	r.HandleFunc("/ws/student/{studentId}", websocketapi.WsStudentHandler).Methods("GET")
 }
