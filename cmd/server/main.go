@@ -7,6 +7,7 @@ import (
 
 	"github.com/edalmava/student-behavior-api/internal/api"
 	"github.com/edalmava/student-behavior-api/internal/db/sqlite"
+	"github.com/edalmava/student-behavior-api/internal/websocketapi"
 
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
@@ -26,17 +27,13 @@ func main() {
 
 	api.SetupRoutes(r)
 
-	/*
+	// Iniciar el gestor de WebSockets
+	go websocketapi.WsManager.Run()
 
-		// Iniciar el gestor de WebSockets
-		go wsManager.run()
-
-		// Nueva ruta para WebSocket
-		r.HandleFunc("/ws", wsHandler).Methods("GET")
-		r.HandleFunc("/ws/grade/{gradeId}", wsGradeHandler).Methods("GET")
-		r.HandleFunc("/ws/student/{studentId}", wsStudentHandler).Methods("GET")
-
-	*/
+	// Nueva ruta para WebSocket
+	r.HandleFunc("/ws", websocketapi.WsHandler).Methods("GET")
+	r.HandleFunc("/ws/grade/{gradeId}", websocketapi.WsGradeHandler).Methods("GET")
+	r.HandleFunc("/ws/student/{studentId}", websocketapi.WsStudentHandler).Methods("GET")
 
 	// Iniciar servidor
 	port := 8080

@@ -42,7 +42,7 @@ var upgrader = websocket.Upgrader{
 }
 
 // Instancia global del WebSocketManager
-var wsManager = WebSocketManager{
+var WsManager = WebSocketManager{
 	clients:        make(map[*websocket.Conn]bool),
 	gradeClients:   make(map[int]map[*websocket.Conn]bool),
 	studentClients: make(map[int]map[*websocket.Conn]bool),
@@ -52,7 +52,7 @@ var wsManager = WebSocketManager{
 }
 
 // Implementación del gestor de WebSockets
-func (manager *WebSocketManager) run() {
+func (manager *WebSocketManager) Run() {
 	for {
 		select {
 		case client := <-manager.register:
@@ -161,7 +161,7 @@ func (manager *WebSocketManager) subscribeToStudent(conn *websocket.Conn, studen
 }
 
 // Handler para WebSocket general
-func wsHandler(w http.ResponseWriter, r *http.Request) {
+func WsHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("Error al actualizar la conexión a WebSocket: %v", err)
@@ -169,12 +169,12 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Registrar nuevo cliente
-	wsManager.register <- conn
+	WsManager.register <- conn
 
 	// Rutina de lectura (para mantener la conexión abierta)
 	go func() {
 		defer func() {
-			wsManager.unregister <- conn
+			WsManager.unregister <- conn
 		}()
 
 		for {
@@ -191,7 +191,7 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Handler para WebSocket por grado
-func wsGradeHandler(w http.ResponseWriter, r *http.Request) {
+func WsGradeHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	gradeID, err := strconv.Atoi(vars["gradeId"])
 	if err != nil {
@@ -206,15 +206,15 @@ func wsGradeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Registrar cliente general
-	wsManager.register <- conn
+	WsManager.register <- conn
 
 	// Suscribir al grado específico
-	wsManager.subscribeToGrade(conn, gradeID)
+	WsManager.subscribeToGrade(conn, gradeID)
 
 	// Rutina de lectura
 	go func() {
 		defer func() {
-			wsManager.unregister <- conn
+			WsManager.unregister <- conn
 		}()
 
 		for {
@@ -230,7 +230,7 @@ func wsGradeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Handler para WebSocket por estudiante
-func wsStudentHandler(w http.ResponseWriter, r *http.Request) {
+func WsStudentHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	studentID, err := strconv.Atoi(vars["studentId"])
 	if err != nil {
@@ -245,15 +245,15 @@ func wsStudentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Registrar cliente general
-	wsManager.register <- conn
+	WsManager.register <- conn
 
 	// Suscribir al estudiante específico
-	wsManager.subscribeToStudent(conn, studentID)
+	WsManager.subscribeToStudent(conn, studentID)
 
 	// Rutina de lectura
 	go func() {
 		defer func() {
-			wsManager.unregister <- conn
+			WsManager.unregister <- conn
 		}()
 
 		for {
@@ -278,5 +278,29 @@ func notifyStudentChange(student models.Student, changeType string) {
 		StudentName: student.Name,
 		Timestamp:   time.Now(),
 	}
-	wsManager.broadcast <- event
+	WsManager.broadcast <- event
+}
+
+func NotifyEvaluationAdd(evaluationID int, studentID int, evalDate time.Time, average float64, gradeID int, studentName string) {
+	// Notificar a los clientes WebSocket
+	evaluation := models.Evaluation{
+		ID:        evaluationID,
+		StudentID: studentID,
+		Date:      evalDate,
+		Average:   average,
+		// Las calificaciones detalladas no se incluyen en la notificación para simplificar
+	}
+
+	// Crear el evento WebSocket
+	event := WebSocketEvent{
+		Type:        "new_evaluation",
+		Data:        evaluation,
+		StudentID:   studentID,
+		GradeID:     gradeID,
+		StudentName: studentName,
+		Timestamp:   time.Now(),
+	}
+
+	// Enviar el evento a todos los clientes interesados
+	WsManager.broadcast <- event
 }

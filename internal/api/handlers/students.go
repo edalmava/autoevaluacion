@@ -12,6 +12,8 @@ import (
 	"github.com/edalmava/student-behavior-api/internal/db/models"
 	"github.com/edalmava/student-behavior-api/internal/db/sqlite"
 
+	"github.com/edalmava/student-behavior-api/internal/websocketapi"
+
 	"github.com/gorilla/mux"
 )
 
@@ -215,31 +217,8 @@ func SaveEvaluationHandler(w http.ResponseWriter, r *http.Request) {
 		"message": "Evaluación guardada correctamente",
 	})
 
-	/*
+	websocketapi.NotifyEvaluationAdd(evaluationID, studentID, evalDate, evalReq.Average, gradeID, evalReq.StudentName)
 
-		// Notificar a los clientes WebSocket
-		evaluation := models.Evaluation{
-			ID:        evaluationID,
-			StudentID: studentID,
-			Date:      evalDate,
-			Average:   evalReq.Average,
-			// Las calificaciones detalladas no se incluyen en la notificación para simplificar
-		}
-
-
-			// Crear el evento WebSocket
-			event := WebSocketEvent{
-				Type:        "new_evaluation",
-				Data:        evaluation,
-				StudentID:   studentID,
-				GradeID:     gradeID,
-				StudentName: evalReq.StudentName,
-				Timestamp:   time.Now(),
-			}
-
-			// Enviar el evento a todos los clientes interesados
-			wsManager.broadcast <- event
-	*/
 }
 
 // Handler para obtener evaluaciones de un estudiante
