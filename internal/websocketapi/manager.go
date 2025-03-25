@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/edalmava/student-behavior-api/internal/api/middleware"
 	"github.com/edalmava/student-behavior-api/internal/db/models"
 
 	"github.com/gorilla/mux"
@@ -162,6 +163,20 @@ func (manager *WebSocketManager) subscribeToStudent(conn *websocket.Conn, studen
 
 // Handler para WebSocket general
 func WsHandler(w http.ResponseWriter, r *http.Request) {
+	// Extraer token del parámetro de consulta
+	tokenString := r.URL.Query().Get("token")
+	if tokenString == "" {
+		http.Error(w, "Se requiere token", http.StatusUnauthorized)
+		return
+	}
+
+	// Validar el token
+	_, err := middleware.ParseToken(tokenString)
+	if err != nil {
+		http.Error(w, "Token inválido", http.StatusUnauthorized)
+		return
+	}
+
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Printf("Error al actualizar la conexión a WebSocket: %v", err)

@@ -5,11 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación de Comportamiento Estudiantil</title>
     <link href="/static/css/main.css" rel="stylesheet">
+    <script src="/static/js/auth-check.js"></script>
     <style>
     </style>
 </head>
 <body>
     <h1>Evaluación de Comportamiento Estudiantil</h1>
+
+    <!-- Agregar este código en las páginas principales -->
+    <div class="user-menu">
+        <span id="username-display"></span>
+        <button id="logout-button">Cerrar sesión</button>
+    </div>
     
     <div class="form-container">
         <form id="evaluationForm">
@@ -355,6 +362,21 @@
             </table>
         </form>
     </div>
+
+    <script>
+        // Mostrar nombre de usuario
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            document.getElementById('username-display').textContent = user.username;
+        }
+        
+        // Manejar cerrar sesión
+        document.getElementById('logout-button').addEventListener('click', function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        });
+    </script>
 
     <script src="/static/js/main.js"></script>
 </body>

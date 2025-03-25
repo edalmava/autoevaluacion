@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administración de Grados</title>
+    <!-- Agregar el script de verificación de autenticación -->
+    <script src="/static/js/auth-check.js"></script>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -122,6 +124,11 @@
     </style>
 </head>
 <body>
+    <!-- Agregar este código en las páginas principales -->
+    <div class="user-menu">
+        <span id="username-display"></span>
+        <button id="logout-button">Cerrar sesión</button>
+    </div>
     <div class="header">
         <h1>Administración de Grados</h1>        
     </div>
@@ -149,10 +156,25 @@
         <h3>Agregar Nuevo Grado</h3>
         <input type="text" id="newGradeName" placeholder="Nombre del grado" maxlength="10">
         <button onclick="addGrade()">Agregar</button>
-    </div>
+    </div>    
 
     <script>
-        const API_BASE = "http://localhost:8080/api";
+        // Mostrar nombre de usuario
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            document.getElementById('username-display').textContent = user.username;
+        }
+        
+        // Manejar cerrar sesión
+        document.getElementById('logout-button').addEventListener('click', function() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        });
+    </script>
+
+    <script>
+        const API_BASE = "http://localhost:8080/api/admin";
 
         // Cargar grados al iniciar
         document.addEventListener('DOMContentLoaded', loadGrades);

@@ -50,3 +50,14 @@ func AdminHandler(w http.ResponseWriter, r *http.Request) {
 func GradesHandler(w http.ResponseWriter, r *http.Request) {
 	PageHandler("grades.html")(w, r)
 }
+
+// LoginPageHandler maneja la ruta de la página de login
+func LoginPageHandler(w http.ResponseWriter, r *http.Request) {
+	// Servir la página de login
+	http.ServeFile(w, r, "./web/static/login.html")
+}
+
+// LoginPageHandler maneja la ruta de la página de login
+func DashboardHandler(w http.ResponseWriter, r *http.Request) {
+	PageHandler("dashboard.html")(w, r)
+}

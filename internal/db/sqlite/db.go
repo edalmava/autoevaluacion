@@ -103,6 +103,29 @@ func initTables(db *sql.DB) error {
 		return err
 	}
 
+	// En la función initTables de db.go
+	// Tabla de usuarios
+	_, err = db.Exec(`
+	CREATE TABLE users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		username TEXT NOT NULL UNIQUE,
+		password TEXT NOT NULL,
+		role TEXT NOT NULL
+	);
+	`)
+	if err != nil {
+		return err
+	}
+
+	// Insertar un usuario admin por defecto
+	_, err = db.Exec("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+		"admin",
+		"$2a$10$NFeFpXLNrCTNwz3pqjY1HOMRj4tK37GAOd76ZrmqdfD5nJNyvjlNC", // "admin2025" hasheado
+		"admin")
+	if err != nil {
+		return err
+	}
+
 	// Insertar datos iniciales de grados
 	gradesToInsert := []string{"6D", "6E", "7D", "7E", "8D", "8E", "9C", "9D", "11A", "11B", "11C"}
 	for _, grade := range gradesToInsert {

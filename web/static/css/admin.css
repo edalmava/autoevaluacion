@@ -1,0 +1,580 @@
+/* web/static/css/admin.css */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+    line-height: 1.6;
+    color: #333;
+}
+
+header {
+    background-color: #3498db;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#username-display {
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+}
+
+#logout-button {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#logout-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+section h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f1f1f1;
+}
+
+#add-grade-btn, #add-user-btn {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+}
+
+#add-grade-btn:before, #add-user-btn:before {
+    content: "+";
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+#add-grade-btn:hover, #add-user-btn:hover {
+    background-color: #219653;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.data-table {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.03);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+}
+
+table th, table td {
+    padding: 0.8rem 1rem;
+    text-align: left;
+}
+
+table th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+    color: #2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+table tr {
+    border-bottom: 1px solid #ecf0f1;
+    transition: background-color 0.2s;
+}
+
+table tr:hover {
+    background-color: #f7fbff;
+}
+
+table tr:last-child {
+    border-bottom: none;
+}
+
+table td {
+    color: #444;
+}
+
+/* Botones de acción en las tablas */
+.edit-grade, .edit-user {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: all 0.2s;
+}
+
+.edit-grade:hover, .edit-user:hover {
+    background-color: #2980b9;
+}
+
+.toggle-grade {
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: all 0.2s;
+}
+
+.toggle-grade:hover {
+    background-color: #d35400;
+}
+
+.delete-grade, .delete-user {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.delete-grade:hover, .delete-user:hover {
+    background-color: #c0392b;
+}
+
+/* Estilos para los modales */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: white;
+    margin: 10% auto;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: slideDown 0.3s;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close:hover {
+    color: #333;
+}
+
+.modal h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group select:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-group input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+form button[type="submit"] {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+form button[type="submit"]:hover {
+    background-color: #2980b9;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .user-menu {
+        margin-top: 1rem;
+    }
+    
+    table th, table td {
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .edit-grade, .edit-user, .toggle-grade, .delete-grade, .delete-user {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Añadir al final de admin.css */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.loading-overlay.fade-out {
+    opacity: 0;
+}
+
+.loading-spinner {
+    color: white;
+    font-size: 3rem;
+}
+
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    min-width: 300px;
+    max-width: 400px;
+    animation: slideIn 0.3s;
+    transition: opacity 0.3s;
+}
+
+.notification.fade-out {
+    opacity: 0;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.notification-content i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.notification.success {
+    border-left: 4px solid #27ae60;
+}
+
+.notification.success i {
+    color: #27ae60;
+}
+
+.notification.error {
+    border-left: 4px solid #e74c3c;
+}
+
+.notification.error i {
+    color: #e74c3c;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.notification-close:hover {
+    color: #555;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Estilos para badges de estado y rol */
+.status-badge, .role-badge {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background-color: #e3f9e5;
+    color: #27ae60;
+}
+
+.status-badge.inactive {
+    background-color: #f8eaec;
+    color: #e74c3c;
+}
+
+.role-badge {
+    text-transform: capitalize;
+}
+
+.role-badge.admin {
+    background-color: #e8f4fd;
+    color: #3498db;
+}
+
+.role-badge.teacher {
+    background-color: #fef5e7;
+    color: #f39c12;
+}
+
+.role-badge.student {
+    background-color: #eee;
+    color: #555;
+}
+
+.empty-message, .loading-message {
+    text-align: center;
+    padding: 2rem;
+    color: #777;
+}
+
+.actions-cell {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-start;
+}
+
+/* Añadir después del CSS actual en admin.css */
+
+/* Estilos para filtros y búsqueda */
+.filter-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 1.5rem;
+}
+
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.6rem 2.5rem 0.6rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.search-box i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.filter-btn.active {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Estilos para paginación */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.5rem;
+    gap: 15px;
+}
+
+.pagination-controls button {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pagination-controls button:hover:not([disabled]) {
+    background-color: #e0e0e0;
+}
+
+.pagination-controls button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#page-info {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* Estilos para campos condicionales */
+.hidden {
+    display: none;
+}
+
+.password-hint {
+    display: block;
+    color: #777;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+/* Responsive para filtros */
+@media (max-width: 768px) {
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-box {
+        width: 100%;
+    }
+    
+    .filter-buttons {
+        justify-content: center;
+    }
+    
+    #add-user-btn {
+        width: 100%;
+    }
+}

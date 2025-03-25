@@ -1,5 +1,5 @@
 // Actualiza estas constantes con la URL de tu API
-const API_BASE_URL = "http://192.168.1.41:8080/api";
+const API_BASE_URL = "/api";
 const GRADES_ENDPOINT = `${API_BASE_URL}/grades`;
 const STUDENTS_ENDPOINT = `${API_BASE_URL}/students`;
 const SAVE_ENDPOINT = `${API_BASE_URL}/evaluation`;
@@ -161,103 +161,6 @@ function updateProgressBar(average) {
         progressTooltip.textContent = 'Superior';
     }
 }
-
-/*
-// Función para guardar evaluación en el endpoint
-saveButton.addEventListener('click', async function() {
-    const studentName = document.getElementById('studentName').value;
-    if (!studentName.trim()) {
-        showNotification('Por favor ingrese el nombre del estudiante', false);
-        return;
-    }
-
-    // Obtener el grado seleccionado
-    const selectedGrade = document.getElementById('gradeSelect').value;
-    if (!selectedGrade) {
-        showNotification('Por favor seleccione un grado', false);
-        return;
-    }
-    
-    // Recopilar calificaciones para enviar
-    let ratings = {};
-    let allRatings = [];
-    
-    const conceptNames = [
-        "Participación activa en clase",
-        "Respeto a compañeros y profesores",
-        "Puntualidad en la entrega de tareas",
-        "Trabajo en equipo",
-        "Organización y disciplina",
-        "Asistencia regular a clases",
-        "Actitud positiva hacia el aprendizaje",
-        "Capacidad para seguir instrucciones",
-        "Comportamiento durante actividades grupales",
-        "Compromiso con su propio desarrollo académico"
-    ];
-    
-    let sum = 0;
-    
-    for (let i = 1; i <= 10; i++) {
-        const ratingName = 'rating' + i;
-        const selectedRating = document.querySelector(`input[name="${ratingName}"]:checked`);
-        const value = parseInt(selectedRating.value);
-        
-        ratings[ratingName] = value;
-        allRatings.push(value);
-        sum += value;
-        
-        // Agregar también con los nombres de los conceptos
-        ratings[`concept${i}`] = {
-            name: conceptNames[i-1],
-            rating: value
-        };
-    }
-    
-    const average = sum / 10;
-    
-    // Crear objeto de datos a enviar
-    const dataToSend = {
-        studentName: studentName,
-        grade: selectedGrade,
-        ratings: ratings,
-        average: average.toFixed(2),
-        date: new Date().toISOString()
-    };
-    
-    // Deshabilitar botón durante el envío
-    saveButton.disabled = true;
-    saveButton.textContent = "Guardando...";
-    
-    try {
-        // Simulación de envío (comentar esto y descomentar el fetch real para producción)
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        console.log("Datos a enviar:", dataToSend);
-        showNotification('Evaluación guardada correctamente', true);
-        
-         Código para enviar realmente los datos (descomentar para producción)
-        const response = await fetch(SAVE_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataToSend)
-        });
-        
-        if (!response.ok) {
-            throw new Error('Error al guardar la evaluación');
-        }
-        
-        showNotification('Evaluación guardada correctamente', true);
-        
-        
-    } catch (error) {
-        console.error('Error:', error);
-        showNotification('Error al guardar: ' + error.message, false);
-    } finally {
-        saveButton.disabled = false;
-        saveButton.textContent = "Guardar Calificaciones";
-    }
-});*/
 
 saveButton.addEventListener('click', async function() {
     const studentName = document.getElementById('studentName').value;

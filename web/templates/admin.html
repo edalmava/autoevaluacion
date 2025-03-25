@@ -3,703 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Evaluaciones</title>
-    <style>
-        :root {
-            --primary: #4a6da7;
-            --primary-light: #6989c3;
-            --secondary: #f39c12;
-            --success: #2ecc71;
-            --danger: #e74c3c;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --gray: #6c757d;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f6f9;
-            color: var(--dark);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        h1, h2, h3 {
-            margin-top: 0;
-        }
-        
-        .card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        
-        .card-header {
-            padding: 15px 20px;
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .card-body {
-            padding: 20px;
-        }
-        
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            margin: 10px 0;
-            color: var(--primary);
-        }
-        
-        .stat-label {
-            color: var(--gray);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        table th {
-            text-align: left;
-            padding: 12px;
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        table td {
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .badge {
-            display: inline-block;
-            padding: 0.25em 0.6em;
-            font-size: 75%;
-            font-weight: 700;
-            border-radius: 0.25rem;
-            color: white;
-        }
-        
-        .badge-success {
-            background-color: var(--success);
-        }
-        
-        .badge-danger {
-            background-color: var(--danger);
-        }
-        
-        .badge-warning {
-            background-color: var(--secondary);
-        }
-        
-        .loader {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(0,0,0,0.1);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s ease-in-out infinite;
-            margin-left: 10px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .grade-selector {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .grade-btn {
-            padding: 8px 16px;
-            border: 1px solid var(--primary);
-            border-radius: 20px;
-            background-color: white;
-            color: var(--primary);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .grade-btn:hover {
-            background-color: var(--primary-light);
-            color: white;
-        }
-        
-        .grade-btn.active {
-            background-color: var(--primary);
-            color: white;
-        }
-        
-        .chart-container {
-            height: 300px;
-            margin-top: 20px;
-        }
-        
-        .evaluation-count {
-            position: relative;
-            top: -3px;
-            margin-left: 5px;
-            font-size: 0.75rem;
-            background-color: var(--primary);
-            color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-        }
-        
-        .refresh-btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 8px 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.2s;
-        }
-        
-        .refresh-btn:hover {
-            background-color: var(--primary-light);
-        }
-        
-        .refresh-icon {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid white;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s linear infinite;
-        }
-        
-        .student-row {
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        
-        .student-row:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .student-details {
-            display: none;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-top: 1px solid #e9ecef;
-        }
-        
-        .chart-row {
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 10px;
-        }
-        
-        .chart-label {
-            width: 40%;
-            font-size: 0.9rem;
-            padding-right: 10px;
-        }
-        
-        .chart-bar-container {
-            width: 60%;
-            background-color: #e9ecef;
-            height: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .chart-bar {
-            height: 100%;
-            background-color: var(--primary);
-            border-radius: 10px;
-        }
-
-        @media (max-width: 768px) {
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .chart-label {
-                width: 100%;
-                margin-bottom: 5px;
-            }
-            
-            .chart-bar-container {
-                width: 100%;
-            }
-        }
-    </style>
+    <title>Panel de Administración - Sistema de Evaluación Estudiantil</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/admin.css">
+    <script src="/static/js/auth-check.js"></script>
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Dashboard de Evaluaciones de Estudiantes</h1>
+        <h1><i class="fas fa-graduation-cap"></i> Panel de Administración</h1>
+        <div class="user-menu">
+            <span id="username-display"><i class="fas fa-user"></i> <span id="username-text"></span></span>
+            <button id="logout-button"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
         </div>
     </header>
-    
-    <main class="container">
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-value" id="total-students">0</div>
-                <div class="stat-label">Estudiantes Totales</div>
+
+    <main>
+        <section id="grades-management">
+            <h2><i class="fas fa-layer-group"></i> Administración de Grados</h2>
+            <button id="add-grade-btn">Agregar Grado</button>
+            
+            <div class="data-table">
+                <table id="grades-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Los grados se cargarán dinámicamente aquí -->
+                        <tr class="loading-row">
+                            <td colspan="4" class="loading-message">Cargando datos...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="evaluated-students">0</div>
-                <div class="stat-label">Estudiantes Evaluados</div>
+        </section>
+
+        <!-- Actualizar la sección de usuarios en admin.html -->
+    <section id="users-management">
+        <h2><i class="fas fa-users"></i> Administración de Usuarios</h2>
+        <div class="filter-controls">
+            <div class="search-box">
+                <input type="text" id="user-search" placeholder="Buscar usuarios...">
+                <i class="fas fa-search"></i>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="pending-students">0</div>
-                <div class="stat-label">Pendientes de Evaluar</div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-role="all">Todos</button>
+                <button class="filter-btn" data-role="admin">Administradores</button>
+                <button class="filter-btn" data-role="teacher">Profesores</button>
+                <button class="filter-btn" data-role="student">Estudiantes</button>
             </div>
-            <div class="stat-card">
-                <div class="stat-value" id="avg-rating">0.0</div>
-                <div class="stat-label">Promedio General</div>
-            </div>
+            <button id="add-user-btn"><i class="fas fa-user-plus"></i> Agregar Usuario</button>
         </div>
         
-        <div class="card">
-            <div class="card-header">
-                <h2>Evaluaciones por Grado</h2>
-                <button id="refresh-btn" class="refresh-btn">
-                    <span>Actualizar</span>
-                    <span class="refresh-icon"></span>
-                </button>
-            </div>
-            <div class="card-body">
-                <div class="grade-selector" id="grade-selector">
-                    <!-- Los botones de grado se cargarán dinámicamente -->
-                    <div class="loader"></div>
-                </div>
-                
-                <div class="card">
-                    <div class="card-header">
-                        <span id="current-grade">Selecciona un grado</span>
-                        <span id="loading-indicator" style="display: none;">
-                            <span class="loader"></span>
-                        </span>
-                    </div>
-                    <div class="card-body">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Estudiante</th>
-                                    <th>Estado</th>
-                                    <th>Última Evaluación</th>
-                                    <th>Promedio</th>
-                                </tr>
-                            </thead>
-                            <tbody id="students-table-body">
-                                <tr>
-                                    <td colspan="4" style="text-align: center;">Selecciona un grado para ver los estudiantes</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+        <div class="data-table">
+            <table id="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Rol</th>
+                        <th>Fecha de Registro</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los usuarios se cargarán dinámicamente aquí -->
+                    <tr class="loading-row">
+                        <td colspan="6" class="loading-message">Cargando datos...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+        
+        <!-- Paginación -->
+        <div class="pagination-controls">
+            <button id="prev-page" disabled><i class="fas fa-chevron-left"></i> Anterior</button>
+            <span id="page-info">Página 1 de 1</span>
+            <button id="next-page" disabled>Siguiente <i class="fas fa-chevron-right"></i></button>
+        </div>
+    </section>
     </main>
 
-    <script>
-        // Estado global
-        const state = {
-            grades: [],
-            students: {},
-            evaluations: {},
-            selectedGrade: null,
-            updateInterval: null,
-            concepts: [
-                "Participación activa en clase",
-                "Respeto a compañeros y profesores",
-                "Puntualidad en la entrega de tareas",
-                "Trabajo en equipo",
-                "Organización y disciplina",
-                "Asistencia regular a clases",
-                "Actitud positiva hacia el aprendizaje",
-                "Capacidad para seguir instrucciones",
-                "Comportamiento durante actividades grupales",
-                "Compromiso con su propio desarrollo académico"
-            ]
-        };
+    <!-- Modal para agregar/editar grado -->
+    <div id="grade-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title"><i class="fas fa-layer-group"></i> Agregar Grado</h2>
+            <form id="grade-form">
+                <input type="hidden" id="grade-id">
+                <div class="form-group">
+                    <label for="grade-name">Nombre:</label>
+                    <input type="text" id="grade-name" required placeholder="Nombre del grado">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="grade-active" checked>
+                        Activo
+                    </label>
+                </div>
+                <button type="submit"><i class="fas fa-save"></i> Guardar</button>
+            </form>
+        </div>
+    </div>
 
-        // Elementos del DOM
-        const elements = {
-            gradeSelector: document.getElementById('grade-selector'),
-            currentGrade: document.getElementById('current-grade'),
-            studentsTableBody: document.getElementById('students-table-body'),
-            totalStudents: document.getElementById('total-students'),
-            evaluatedStudents: document.getElementById('evaluated-students'),
-            pendingStudents: document.getElementById('pending-students'),
-            avgRating: document.getElementById('avg-rating'),
-            refreshBtn: document.getElementById('refresh-btn'),
-            loadingIndicator: document.getElementById('loading-indicator')
-        };
+    <!-- Actualizar el modal de usuario en admin.html -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="user-modal-title"><i class="fas fa-user"></i> Agregar Usuario</h2>
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+                <div class="form-group">
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" required placeholder="Nombre de usuario">
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" required placeholder="Contraseña">
+                    <small class="password-hint">Dejar en blanco para mantener la contraseña actual al editar</small>
+                </div>
+                <div class="form-group">
+                    <label for="role">Rol:</label>
+                    <select id="role" required>
+                        <option value="admin">Administrador</option>
+                        <option value="teacher">Profesor</option>
+                        <option value="student">Estudiante</option>
+                    </select>
+                </div>
+                <div id="student-fields" class="hidden">
+                    <div class="form-group">
+                        <label for="grade">Grado:</label>
+                        <select id="grade" disabled>
+                            <option value="">Seleccione un grado</option>
+                            <!-- Los grados se cargarán dinámicamente -->
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="user-active" checked>
+                        Activo
+                    </label>
+                </div>
+                <button type="submit"><i class="fas fa-save"></i> Guardar</button>
+            </form>
+        </div>
+    </div>
 
-        // Función para formatear fechas
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('es-ES', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        // Funciones para obtener datos de la API
-        async function fetchGrades() {
-            try {
-                const response = await fetch('/api/gradesAdmin');
-                if (!response.ok) throw new Error('Error al obtener grados');
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error:', error);
-                return [];
-            }
-        }
-
-        async function fetchStudentsByGrade(gradeName) {
-            try {
-                elements.loadingIndicator.style.display = 'inline-block';
-                const response = await fetch(`/api/students?grade=${encodeURIComponent(gradeName)}`);
-                if (!response.ok) throw new Error('Error al obtener estudiantes');
-                const data = await response.json();
-                return data.students || [];
-            } catch (error) {
-                console.error('Error:', error);
-                return [];
-            } finally {
-                elements.loadingIndicator.style.display = 'none';
-            }
-        }
-
-        async function fetchStudentEvaluations(studentId) {
-            try {
-                const response = await fetch(`/api/evaluations/${studentId}`);
-                if (!response.ok) throw new Error('Error al obtener evaluaciones');
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error:', error);
-                return [];
-            }
-        }
-
-        // Función para renderizar los botones de grado
-        function renderGradeButtons(grades) {
-            elements.gradeSelector.innerHTML = '';
-            
-            grades.forEach(grade => {
-                const button = document.createElement('button');
-                button.classList.add('grade-btn');
-                button.textContent = grade.name;
-                
-                if (state.selectedGrade === grade.name) {
-                    button.classList.add('active');
-                }
-                
-                button.addEventListener('click', () => {
-                    document.querySelectorAll('.grade-btn').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    button.classList.add('active');
-                    selectGrade(grade.name);
-                });
-                
-                elements.gradeSelector.appendChild(button);
-            });
-        }
-
-        // Función para renderizar la tabla de estudiantes
-        function renderStudentsTable(students, evaluations) {
-            if (!students || students.length === 0) {
-                elements.studentsTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No hay estudiantes en este grado</td></tr>';
-                updateStats();
-                return;
-            }
-            
-            elements.studentsTableBody.innerHTML = '';
-            
-            students.forEach(student => {
-                const studentEvaluations = evaluations[student.id] || [];
-                const hasEvaluations = studentEvaluations.length > 0;
-                const lastEvaluation = hasEvaluations ? studentEvaluations[0] : null;
-                
-                const row = document.createElement('tr');
-                row.classList.add('student-row');
-                row.dataset.studentId = student.id;
-                
-                // Nombre del estudiante
-                const nameCell = document.createElement('td');
-                nameCell.textContent = student.name;
-                if (hasEvaluations) {
-                    const count = document.createElement('span');
-                    count.classList.add('evaluation-count');
-                    count.textContent = studentEvaluations.length;
-                    nameCell.appendChild(count);
-                }
-                row.appendChild(nameCell);
-                
-                // Estado
-                const statusCell = document.createElement('td');
-                const statusBadge = document.createElement('span');
-                statusBadge.classList.add('badge');
-                
-                if (hasEvaluations) {
-                    statusBadge.classList.add('badge-success');
-                    statusBadge.textContent = 'Evaluado';
-                } else {
-                    statusBadge.classList.add('badge-danger');
-                    statusBadge.textContent = 'Pendiente';
-                }
-                
-                statusCell.appendChild(statusBadge);
-                row.appendChild(statusCell);
-                
-                // Última evaluación
-                const dateCell = document.createElement('td');
-                dateCell.textContent = hasEvaluations ? formatDate(lastEvaluation.date) : 'N/A';
-                row.appendChild(dateCell);
-                
-                // Promedio
-                const avgCell = document.createElement('td');
-                avgCell.textContent = hasEvaluations ? lastEvaluation.average.toFixed(1) : 'N/A';
-                row.appendChild(avgCell);
-                
-                elements.studentsTableBody.appendChild(row);
-                
-                // Si hay evaluaciones, añadir la fila de detalles
-                if (hasEvaluations) {
-                    const detailsRow = document.createElement('tr');
-                    const detailsCell = document.createElement('td');
-                    detailsCell.colSpan = 4;
-                    detailsCell.classList.add('student-details');
-                    detailsCell.id = `details-${student.id}`;
-                    
-                    // Contenido de los detalles
-                    detailsCell.innerHTML = `
-                        <h3>Última evaluación: ${formatDate(lastEvaluation.date)}</h3>
-                        <div class="chart-container">
-                            ${lastEvaluation.ratings.map((rating, index) => `
-                                <div class="chart-row">
-                                    <div class="chart-label">${state.concepts[index] || `Concepto ${rating.concept_id}`}</div>
-                                    <div class="chart-bar-container">
-                                        <div class="chart-bar" style="width: ${rating.value * 10}%"></div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    
-                    detailsRow.appendChild(detailsCell);
-                    elements.studentsTableBody.appendChild(detailsRow);
-                    
-                    // Añadir evento de clic para mostrar/ocultar detalles
-                    row.addEventListener('click', () => {
-                        const detailsElement = document.getElementById(`details-${student.id}`);
-                        if (detailsElement.style.display === 'block') {
-                            detailsElement.style.display = 'none';
-                        } else {
-                            // Ocultar todos los detalles primero
-                            document.querySelectorAll('.student-details').forEach(el => {
-                                el.style.display = 'none';
-                            });
-                            detailsElement.style.display = 'block';
-                        }
-                    });
-                }
-            });
-            
-            updateStats();
-        }
-
-        // Función para actualizar las estadísticas
-        function updateStats() {
-            if (!state.selectedGrade || !state.students[state.selectedGrade]) {
-                return;
-            }
-            
-            const students = state.students[state.selectedGrade];
-            const evaluations = state.evaluations;
-            
-            let totalStudents = students.length;
-            let evaluatedStudents = 0;
-            let totalRating = 0;
-            let ratingCount = 0;
-            
-            students.forEach(student => {
-                const studentEvals = evaluations[student.id] || [];
-                if (studentEvals.length > 0) {
-                    evaluatedStudents++;
-                    totalRating += studentEvals[0].average;
-                    ratingCount++;
-                }
-            });
-            
-            elements.totalStudents.textContent = totalStudents;
-            elements.evaluatedStudents.textContent = evaluatedStudents;
-            elements.pendingStudents.textContent = totalStudents - evaluatedStudents;
-            elements.avgRating.textContent = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : '0.0';
-        }
-
-        // Función para seleccionar un grado
-        async function selectGrade(gradeName) {
-            state.selectedGrade = gradeName;
-            elements.currentGrade.textContent = `Grado: ${gradeName}`;
-            
-            if (!state.students[gradeName]) {
-                const students = await fetchStudentsByGrade(gradeName);
-                state.students[gradeName] = students;
-                
-                // Cargar evaluaciones para cada estudiante
-                await Promise.all(students.map(async student => {
-                    const evaluations = await fetchStudentEvaluations(student.id);
-                    state.evaluations[student.id] = evaluations;
-                }));
-            }
-            
-            renderStudentsTable(state.students[gradeName], state.evaluations);
-        }
-
-        // Función para actualizar los datos
-        async function refreshData() {
-            elements.refreshBtn.disabled = true;
-            
-            try {
-                // Recargar los grados
-                const grades = await fetchGrades();
-                state.grades = grades;
-                renderGradeButtons(grades);
-                
-                if (state.selectedGrade) {
-                    // Recargar estudiantes y evaluaciones del grado seleccionado
-                    const students = await fetchStudentsByGrade(state.selectedGrade);
-                    state.students[state.selectedGrade] = students;
-                    
-                    // Recargar evaluaciones para cada estudiante
-                    await Promise.all(students.map(async student => {
-                        const evaluations = await fetchStudentEvaluations(student.id);
-                        state.evaluations[student.id] = evaluations;
-                    }));
-                    
-                    renderStudentsTable(state.students[state.selectedGrade], state.evaluations);
-                }
-            } catch (error) {
-                console.error('Error al actualizar datos:', error);
-            } finally {
-                elements.refreshBtn.disabled = false;
-            }
-        }
-
-        // Configurar intervalo de actualización automática
-        function setupAutoRefresh(intervalMs = 30000) {
-            if (state.updateInterval) {
-                clearInterval(state.updateInterval);
-            }
-            
-            state.updateInterval = setInterval(refreshData, intervalMs);
-        }
-
-        // Inicialización
-        async function init() {
-            // Cargar los grados
-            const grades = await fetchGrades();
-            state.grades = grades;
-            renderGradeButtons(grades);
-            
-            // Configurar el botón de actualización
-            elements.refreshBtn.addEventListener('click', refreshData);
-            
-            // Seleccionar el primer grado si hay grados disponibles
-            if (grades.length > 0) {
-                selectGrade(grades[0].name);
-            }
-            
-            // Configurar actualización automática
-            //setupAutoRefresh();
-        }
-
-        // Conexión general
-        const ws = new WebSocket('ws://localhost:8080/ws');
-
-        // Conexión para un grado específico (ejemplo: grado ID 1)
-        //const wsGrade = new WebSocket('ws://localhost:8080/ws/grade/1');
-
-        // Conexión para un estudiante específico (ejemplo: estudiante ID 5)
-        //const wsStudent = new WebSocket('ws://localhost:8080/ws/student/5');
-
-        // Manejar eventos recibidos
-        ws.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            //console.log('Nuevo evento:', data);
-            
-            if (data.type === 'new_evaluation') {
-                // Actualizar la interfaz de usuario con la nueva evaluación
-                //updateEvaluationList(data.data);
-                //console.log(data.data);
-                refreshData()
-            }
-        };
-
-        // Iniciar la aplicación
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    <!-- Añadir aquí el script JavaScript -->
+    <script src="/static/js/admin.js"></script>
 </body>
 </html>

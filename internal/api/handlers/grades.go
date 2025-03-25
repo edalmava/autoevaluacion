@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -175,6 +176,44 @@ func UpdateGrade(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(grade)
+}
+
+// GetGradeHandler maneja la solicitud para obtener un grado específico por su ID
+func GetGradeHandler(w http.ResponseWriter, r *http.Request) {
+	// Obtener el ID del grado de los parámetros de la URL
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		http.Error(w, "ID de grado inválido", http.StatusBadRequest)
+		return
+	}
+
+	db := sqlite.GetDB()
+
+	/*
+		// Obtener la conexión a la base de datos
+		db, err := database.GetConnection()
+		if err != nil {
+			http.Error(w, "Error al conectar con la base de datos", http.StatusInternalServerError)
+			return
+		}
+		defer db.Close()*/
+
+	// Consultar el grado
+	grade := models.Grade{}
+	err = db.QueryRow("SELECT id, name, active FROM grades WHERE id = ?", id).Scan(&grade.ID, &grade.Name, &grade.Active)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Grado no encontrado", http.StatusNotFound)
+		} else {
+			http.Error(w, "Error al consultar el grado", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// Configurar encabezados y enviar respuesta
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(grade)
 }
