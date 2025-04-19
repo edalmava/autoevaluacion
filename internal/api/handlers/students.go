@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/edalmava/student-behavior-api/internal/db/models"
-	"github.com/edalmava/student-behavior-api/internal/db/sqlite"
+	"github.com/edalmava/autoevaluacion/internal/db/models"
+	"github.com/edalmava/autoevaluacion/internal/db/sqlite"
 
-	"github.com/edalmava/student-behavior-api/internal/websocketapi"
+	"github.com/edalmava/autoevaluacion/internal/websocketapi"
 
 	"github.com/gorilla/mux"
 )

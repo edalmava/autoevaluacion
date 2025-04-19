@@ -5,9 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/edalmava/student-behavior-api/internal/api"
-	"github.com/edalmava/student-behavior-api/internal/db/sqlite"
-	"github.com/edalmava/student-behavior-api/internal/websocketapi"
+	"github.com/edalmava/autoevaluacion/internal/api"
+	"github.com/edalmava/autoevaluacion/internal/db/sqlite"
+	"github.com/edalmava/autoevaluacion/internal/websocketapi"
+
+	"github.com/edalmava/saludo"
 
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
@@ -29,6 +31,8 @@ func main() {
 
 	// Iniciar el gestor de WebSockets
 	go websocketapi.WsManager.Run()
+
+	fmt.Println(saludo.Hello("Edalmava"))
 
 	// Iniciar servidor
 	port := 8080

@@ -4,9 +4,9 @@ package api
 import (
 	"net/http"
 
-	"github.com/edalmava/student-behavior-api/internal/api/handlers"
-	"github.com/edalmava/student-behavior-api/internal/api/middleware"
-	"github.com/edalmava/student-behavior-api/internal/websocketapi"
+	"github.com/edalmava/autoevaluacion/internal/api/handlers"
+	"github.com/edalmava/autoevaluacion/internal/api/middleware"
+	"github.com/edalmava/autoevaluacion/internal/websocketapi"
 
 	"github.com/gorilla/mux"
 )

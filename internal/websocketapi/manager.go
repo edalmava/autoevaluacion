@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/edalmava/student-behavior-api/internal/api/middleware"
-	"github.com/edalmava/student-behavior-api/internal/db/models"
+	"github.com/edalmava/autoevaluacion/internal/api/middleware"
+	"github.com/edalmava/autoevaluacion/internal/db/models"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"

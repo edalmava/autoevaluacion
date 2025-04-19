@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/edalmava/student-behavior-api/internal/api/middleware"
-	"github.com/edalmava/student-behavior-api/internal/db/models"
-	"github.com/edalmava/student-behavior-api/internal/db/sqlite"
+	"github.com/edalmava/autoevaluacion/internal/api/middleware"
+	"github.com/edalmava/autoevaluacion/internal/db/models"
+	"github.com/edalmava/autoevaluacion/internal/db/sqlite"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -37,7 +37,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	db := sqlite.GetDB()
 	var user models.User
 	var hashedPassword string
-	err := db.QueryRow("SELECT id, username, password, role FROM users WHERE username = ?", req.Username).Scan(
+	err := db.QueryRow("SELECT id, username, password, role FROM users WHERE username = ? AND active = 1", req.Username).Scan(
 		&user.ID, &user.Username, &hashedPassword, &user.Role)
 
 	if err != nil {

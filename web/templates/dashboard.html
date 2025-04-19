@@ -239,32 +239,47 @@
             padding: 15px;
             background-color: #f9f9f9;
             border-top: 1px solid #e9ecef;
+            grid-column: 1 / -1; /* Span across all columns */
+            width: 100%;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
         }
         
         .chart-row {
             display: flex;
-            flex-wrap: wrap;
+            align-items: center;
             margin-bottom: 10px;
         }
         
         .chart-label {
-            width: 40%;
-            font-size: 0.9rem;
+            width: 60%;
+            font-size: 0.8rem;
             padding-right: 10px;
         }
         
         .chart-bar-container {
-            width: 60%;
+            width: 20%;
             background-color: #e9ecef;
             height: 20px;
             border-radius: 10px;
             overflow: hidden;
+            margin-right: 10px;
         }
         
         .chart-bar {
             height: 100%;
             background-color: var(--primary);
             border-radius: 10px;
+        }
+
+        .chart-value {
+            width: 10%;
+            font-weight: bold;
+            color: var(--primary);
         }
 
         @media (max-width: 768px) {
@@ -284,6 +299,38 @@
             .chart-bar-container {
                 width: 100%;
             }
+        }
+
+        .user-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 10px 15px;
+        }
+
+        #username-display {
+            margin-right: 15px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        #logout-button {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #logout-button:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
@@ -342,7 +389,7 @@
                         </span>
                     </div>
                     <div class="card-body">
-                        <table>
+                        <table class="students-table">
                             <thead>
                                 <tr>
                                     <th>Estudiante</th>
@@ -564,8 +611,9 @@
                                 <div class="chart-row">
                                     <div class="chart-label">${state.concepts[index] || `Concepto ${rating.concept_id}`}</div>
                                     <div class="chart-bar-container">
-                                        <div class="chart-bar" style="width: ${rating.value * 10}%"></div>
+                                        <div class="chart-bar" style="width: ${rating.value * 20}%"></div>
                                     </div>
+                                    <div class="chart-value">${rating.value.toFixed(1)}/5.0</div>
                                 </div>
                             `).join('')}
                         </div>
